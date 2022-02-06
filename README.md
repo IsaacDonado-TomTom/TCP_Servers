@@ -1,3 +1,5 @@
+*Credits to: [Beej's Guide to Network Programming](https://beej.us/guide/bgnet/html/) & [Sloan Kelly from YouTube](https://www.youtube.com/channel/UC4LMPKWdhfFlJrJ1BHmRhMQ), most of the stuff written on this document has been extracted and slightly simplified or modified from those two sources*
+
 # Table of Contents
 1. [Making a simple TCP server without non-blocking abilities](#tcp_server)
   + [Allocating a socket](#socket)
@@ -6,7 +8,6 @@
   + [Accept pending connection](#accept)
   + [Receive data on a socket](#recv)
 
-*Credits to: [Beej's Guide to Network Programming](https://beej.us/guide/bgnet/html/) & [Sloan Kelly from YouTube](https://www.youtube.com/channel/UC4LMPKWdhfFlJrJ1BHmRhMQ)*
 
 
 <a href name="tcp_server"></a>
