@@ -12,7 +12,7 @@
 
 
 <a href name="tcp_server"></a>
-## Making a simple TCP server without non-blocking abilities
+# Making a simple TCP server without non-blocking abilities
 
 The steps for a server to listen for a conenction are the following
 ```text
@@ -26,7 +26,7 @@ The steps for a server to listen for a conenction are the following
 ```
 
 <a name="socket"></a>
-# int socket(int domain, int type, int protocol)
+## int socket(int domain, int type, int protocol)
 To Allocate a socket descriptor.
 
 ```text
@@ -54,7 +54,7 @@ SOCKSTREAM - Represents that we're dealing with reliable TCP socket. SOCK_DGRAM 
 
 
 <a name="bind"></a>
-# int bind(int sockfd, struct sockaddr *my_addr, socklen_t addrlen)
+## int bind(int sockfd, struct sockaddr *my_addr, socklen_t addrlen)
 Associate a socket with an IP address and port number
 
 ```text
@@ -91,7 +91,7 @@ INADDDRANY - When we don't know the IP address of our machine, we can use the sp
 
 
 <a name="listen"></a>
-# int listen(int sockfd, int backlog)
+## int listen(int sockfd, int backlog)
 Tell a socket to listen for incoming connections
 
 ```text
@@ -117,7 +117,7 @@ SOMAXCONN - Socket maximum connection number established by the OS.
 
 
 <a name="accept"></a>
-# int accept(int sockfd, struct sockaddr* storage, socklen_t* addrlen)
+## int accept(int sockfd, struct sockaddr* storage, socklen_t* addrlen)
 Accept an incoming connection on a listening socket
 
 ```text
@@ -152,7 +152,7 @@ NI_MAXSERV - Reasonable max service buffer size. 32
 
 
 <a name="recv"></a>
-# ssize_t recv(int sockfd, void* buff, size_t len, int flags)
+## ssize_t recv(int sockfd, void* buff, size_t len, int flags)
 Receive data on a socket
 
 ```text
@@ -185,7 +185,7 @@ MSG_WAITALL - Tell recv() to not return until all the data you specified in the 
 
 
 <a name="send"></a>
-# int send(int sockfd, void* buff, int len, int flags)
+## int send(int sockfd, void* buff, int len, int flags)
 Send data out over a socket
 
 ```text
@@ -219,4 +219,4 @@ MSG_NOSIGNAL - If you send() to a remote host which is no longer recv()ing, youâ
 
 
 <a href name="multiple_clients"></a>
-## Allow multiple clients to connect
+# Allow multiple clients to connect
