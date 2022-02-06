@@ -7,6 +7,13 @@
 
 The steps for a server to listen for a conenction are the following
 ```text
-// Create a socket
-// Bind the socket
+1. Create a socket
+2. Bind the socket
+3. Mark port for listening
+4. Accept a call
+5. Close the listening socket
+6. While receiving, do something
+7. Close the socket
 ```
+
+
