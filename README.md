@@ -1,6 +1,7 @@
 # Table of Contents
 1. [Making a simple TCP server without non-blocking abilities](#tcp_server)
   + [Allocating a socket](#socket)
+  + [Bind socket to port](#bind)
 
 
 <a href name="tcp_server"></a>
@@ -39,4 +40,24 @@ In usual usage, you get the values for these parameters from a call to getaddrin
 The new socket descriptor to be used in subsequent calls, or -1 on error (and errno will be set accordingly).
 
 
+
+<a name="bind"></a>
+# int bind(int sockfd, struct sockaddr *my_addr, socklen_t addrlen)
+Associate a socket with an IP address and port number
+
+```text
+#include <sys/types.h>
+#include <sys/socket.h>
+```
+
+**Parameters**
++ **sockfd** This is the socket fd you want to bind with the IP & Port, the return value of socket()
++ **sockaddr *my_addr** 
++ **addrlen** 
+
+**Description**
+Ah..
+
+**Return**
+Returns zero on success, or -1 on error (and errno will be set accordingly).
 
