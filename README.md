@@ -4,6 +4,7 @@
   + [Bind socket to port](#bind)
   + [Listen for incomming connections](#listen)
   + [Accept pending connection](#accept)
+  + [Receive data on a socket](#recv)
 
 
 <a href name="tcp_server"></a>
@@ -140,4 +141,38 @@ accept() returns the newly connected socket descriptor, or -1 on error, with err
 Useful definitions: 
 NI_MAXHOST - Reasonable max host buffer size. 1025
 NI_MAXSERV - Reasonable max service buffer size. 32
+```
+
+
+
+
+
+<a name="recv"></a>
+# ssize_t recv(int sockfd, void* buff, size_t len, int flags)
+Receive data on a socket
+
+```text
+#include <sys/types.h>
+#include <sys/socket.h>
+```
+
+**Parameters** ah...
++ **sockfd** the socket descriptor you want to send data to (whether it’s the one returned by socket() or the one you got with accept()), in our case it's the one from accept().
++ **buff** buff is a pointer to the data you want to send
++ **len** len is the length of that data in bytes
++ **flags** Just set flags to 0.
+
+**Description**
+Once you have a socket up and connected, you can read incoming data from the remote side using the recv().
+When you call recv(), it will block until there is some data to read. If you want to not block, set the socket to non-blocking or check with select() or poll() to see if there is incoming data before calling recv() or recvfrom().
+
+**Return**
+Returns the number of bytes actually received (which might be less than you requested in the len parameter), or -1 on error (and errno will be set accordingly).
+
+If the remote side has closed the connection, recv() will return 0. This is the normal method for determining if the remote side has closed the connection. Normality is good, rebel!
+```text
+Useful definitions for flags: 
+MSG_OOB - Receive Out of Band data. This is how to get data that has been sent to you with the MSG_OOB flag in send(). As the receiving side, you will have had signal SIGURG raised telling you there is urgent data. In your handler for that signal, you could call recv() with this MSG_OOB flag.
+MSG_PEEK - If you want to call recv() “just for pretend”, you can call it with this flag. This will tell you what’s waiting in the buffer for when you call recv() “for real” (i.e. without the MSG_PEEK flag. It’s like a sneak preview into the next recv() call.
+MSG_WAITALL - Tell recv() to not return until all the data you specified in the len parameter. It will ignore your wishes in extreme circumstances, however, like if a signal interrupts the call or if some error occurs or if the remote side closes the connection, etc. Don’t be mad with it.
 ```
