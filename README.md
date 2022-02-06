@@ -7,6 +7,7 @@
   + [Listen for incomming connections](#listen)
   + [Accept pending connection](#accept)
   + [Receive data on a socket](#recv)
+2. [Allow multiple clients to connect](#multiple_clients)
 
 
 
@@ -214,3 +215,8 @@ MSG_DONTROUTE - Don’t send this data over a router, just keep it local.
 MSG_DONTWAIT - If send() would block because outbound traffic is clogged, have it return EAGAIN. This is like a “enable non-blocking just for this send.” See the section on blocking for more details.
 MSG_NOSIGNAL - If you send() to a remote host which is no longer recv()ing, you’ll typically get the signal SIGPIPE. Adding this flag prevents that signal from being raised.
 ```
+
+
+
+<a href name="multiple_clients"></a>
+## Allow multiple clients to connect
