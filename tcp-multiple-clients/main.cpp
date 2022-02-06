@@ -43,79 +43,34 @@ int main(int argc, char** argv)
     hint.sin_addr.s_addr = INADDR_ANY;
     int bind_result = bind(socket_fd, (sockaddr*)&hint, sizeof(hint));
     if (bind_result < 0)
+    {
+        close(socket_fd);
         error_exit("[103]Bind failed.", 103);
+    }
 
 
 
     // listen()
     int listen_result = listen(socket_fd, SOMAXCONN);
     if (listen_result < 0)
-        error_exit("[104]Listen failed.", 104);
-
-
-
-    // Set sockaddr_in for client info and accept()
-    sockaddr_in client_info;
-    socklen_t  client_infoSize = sizeof(client_info);
-    char        host[NI_MAXHOST];
-    char        service[NI_MAXSERV];
-    memset((void*)host, 0, NI_MAXHOST);       //Cleaning buffer, maybe garbage in there.
-    memset((void*)service, 0, NI_MAXSERV); //Cleaning...
-    int client_socket = accept(socket_fd, (sockaddr*)&client_info, &client_infoSize);
-
-    if (client_socket < 0)
     {
-        close (socket_fd);
-        error_exit("[105]Accept() failed.", 105);
+        close(socket_fd);
+        error_exit("[104]Listen failed.", 104);
     }
-    //if (!(getaddrinfo(&host, &service, &client_info, &client_infoSize))
-    //{
-    //    close(socket_fd);
-    //    close(client_socket);
-    //    error_exit("[106]Failed for fetch client addr info.", 106);
-    //}
 
-
-
-
-
-    // Don't know if close of socket_fd should be actually done here if it's non-blocking, probably not.
-    // Close listen() step.. (?)
-    close(socket_fd);
-
-    // Practice of extracting data from struct.. just prints address of client.
-    std::cout << "Accepted connection from: " << inet_ntoa(client_info.sin_addr) << std::endl;
-
-    char buff[4096];
+    // Select magic
+    fd_set  master;
+    fd_set  copy;
+    int     socket_count;
+    FD_ZERO(&master);           // Initialized "master" set and cleared it for safety. 
+    FD_SET(socket_fd, &master); // Add main socket to the set. (?)
     while(true)
     {
-        // Clear buffer.
-        memset((void*)buff, 0, 4096);
-
-        // Wait for msg
-        int bytesReceived = recv(client_socket, &buff, 4096, 0);
-        if (bytesReceived < 0)
-        {
-            close(client_socket);
-            error_exit("[107]Connection error when receiving bytes.", 107);
-        }
-        if (bytesReceived == 0)
-        {
-            std::cout << "Client disconnected.\n";
-            break ;
-        }
-
-        // Display msg
-        std::cout << "Received this string: " << std::string(buff, 0, bytesReceived) << std::endl;
-
-        //Resend same msg back to client
-        send(client_socket, &buff, bytesReceived + 1, 0);
+        // Copy since select destroys "unneeded" info from struct
+        copy = master; 
     }
 
 
-
-    // Done.
-    close(client_socket);
-
+    close(socket_fd);
     return (0);
 }
