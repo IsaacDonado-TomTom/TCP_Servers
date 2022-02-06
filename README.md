@@ -2,6 +2,7 @@
 1. [Making a simple TCP server without non-blocking abilities](#tcp_server)
   + [Allocating a socket](#socket)
   + [Bind socket to port](#bind)
+  + [Listen for incomming connections](#listen)
 
 
 <a href name="tcp_server"></a>
@@ -70,4 +71,25 @@ Lastly, the addrlen parameter should be set to sizeof my_addr.
 Returns zero on success, or -1 on error (and errno will be set accordingly).
 
 
+
+
+
+<a name="listen"></a>
+# int listen(int sockfd, int backlog)
+Tell a socket to listen for incoming connections
+
+```text
+#include <sys/socket.h>
+```
+
+**Parameters**
++ **sockfd** This is the socket fd you want to listen through, the return value of socket()
++ **backlog** The backlog parameter can mean a couple different things depending on the system you on, but loosely it is how many pending connections you can have before the kernel starts rejecting new ones. So as the new connections come in, you should be quick to accept() them so that the backlog doesn’t fill. Try setting it to 10 or so, and if your clients start getting “Connection refused” under heavy load, set it higher.
+
+**Description**
+You can take your socket descriptor (made with the socket() system call) and tell it to listen for incoming connections. This is what differentiates the servers from the clients, guys.
+Before calling listen(), your server should call bind() to attach itself to a specific port number. That port number (on the server’s IP address) will be the one that clients connect to.
+
+**Return**
+Returns zero on success, or -1 on error (and errno will be set accordingly).
 
