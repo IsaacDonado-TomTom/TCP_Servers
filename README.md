@@ -138,6 +138,6 @@ The socket descriptor returned by accept() is a bona fide socket descriptor, ope
 accept() returns the newly connected socket descriptor, or -1 on error, with errno set appropriately.
 ```text
 Useful definitions: 
-NI_MAXHOST - ..
-NI_MAXSERV - ..
+NI_MAXHOST - Reasonable max host buffer size. 1025
+NI_MAXSERV - Reasonable max service buffer size. 32
 ```
