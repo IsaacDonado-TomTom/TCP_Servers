@@ -52,12 +52,22 @@ Associate a socket with an IP address and port number
 
 **Parameters**
 + **sockfd** This is the socket fd you want to bind with the IP & Port, the return value of socket()
-+ **sockaddr *my_addr** 
-+ **addrlen** 
++ **sockaddr \*my_addr** You must declare a sockaddr_in struct and set the sin_family, port and specify which addresses will be allowed to connect and pass it as an arguement
++ **addrlen** The result of sizeof of the struct you set for the previous parameter. 
 
 **Description**
-Ah..
+When a remote machine wants to connect to your server program, it needs two pieces of information: the IP address and the port number. The bind() call allows you to do just that.
+
+First, you call getaddrinfo() to load up a struct sockaddr with the destination address and port information. Then you call socket() to get a socket descriptor, and then you pass the socket and address into bind(), and the IP address and port are magically (using actual magic) bound to the socket!
+
+If you don’t know your IP address, or you know you only have one IP address on the machine, or you don’t care which of the machine’s IP addresses is used, you can simply pass the AI_PASSIVE flag in the hints parameter to getaddrinfo(). What this does is fill in the IP address part of the struct sockaddr with a special value that tells bind() that it should automatically fill in this host’s IP address.
+
+What what? What special value is loaded into the struct sockaddr’s IP address to cause it to auto-fill the address with the current host? I’ll tell you, but keep in mind this is only if you’re filling out the struct sockaddr by hand; if not, use the results from getaddrinfo(), as per above. In IPv4, the sin_addr.s_addr field of the struct sockaddr_in structure is set to INADDR_ANY. In IPv6, the sin6_addr field of the struct sockaddr_in6 structure is assigned into from the global variable in6addr_any. Or, if you’re declaring a new struct in6_addr, you can initialize it to IN6ADDR_ANY_INIT.
+
+Lastly, the addrlen parameter should be set to sizeof my_addr.
 
 **Return**
 Returns zero on success, or -1 on error (and errno will be set accordingly).
+
+
 
