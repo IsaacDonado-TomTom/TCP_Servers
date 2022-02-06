@@ -220,3 +220,39 @@ MSG_NOSIGNAL - If you send() to a remote host which is no longer recv()ing, you�
 
 <a href name="multiple_clients"></a>
 # Allow multiple clients to connect
+Up until this point our TCP server can only handle a single connection and blocks the rest if it's busy with one, a possible solution for this is multithreading but that can be a bad idea. Another two options are the functions select() and poll(). I've realized after some research poll is much more efficient than select but we'll be covering mostly select due to its simplicity.
+*Sources that helped me through this: [Jacob Sorber](https://www.youtube.com/watch?v=Y6pFtgRdUts), [Sloan Kelly](https://www.youtube.com/watch?v=dquxuXeZXgo&list=PLZo2FfoMkJeEogzRXEJeTb3xpA2RAzwCZ&index=11)*
+
+
+<a name="select"></a>
+## int select(int n, fd_set\ *readfds, fd_set \*writefds, fd_set \*exceptfds,
+               struct timeval \*timeout)
+Check if sockets descriptors are ready to read/write
+
+```text
+#include <sys/types.h>
+#include <sys/socket.h>
+```
+
+**Parameters** 
++ **n** The first parameter, n is the highest-numbered socket descriptor (they’re just ints, remember?) plus one.
++ **readfds** if you want to know when any of the sockets in the set is ready to recv() data
++ **writefds** if any of the sockets is ready to send() data to
++ **exceptfds** if you need to know when an exception (error) occurs on any of the sockets
+
+**Description**
+The select() function gives you a way to simultaneously check multiple sockets to see if they have data waiting to be recv()d, or if you can send() data to them without blocking, or if some exception has occurred.
+
+You populate your sets of socket descriptors using the macros, like FD_SET(), above. Once you have the set, you pass it into the function as one of the following parameters: readfds if you want to know when any of the sockets in the set is ready to recv() data, writefds if any of the sockets is ready to send() data to, and/or exceptfds if you need to know when an exception (error) occurs on any of the sockets. Any or all of these parameters can be NULL if you’re not interested in those types of events. After select() returns, the values in the sets will be changed to show which are ready for reading or writing, and which have exceptions.
+
+**Return**
+Returns the number of descriptors in the set on success, 0 if the timeout was reached, or -1 on error (and errno will be set accordingly). Also, the sets are modified to show which sockets are ready.
+
+
+```text
+Useful macros related to select(): 
+FD_SET(int fd, fd_set *set); - Add fd to the set.
+FD_CLR(int fd, fd_set *set); - Remove fd from the set.
+FD_ISSET(int fd, fd_set *set); - Returns true if fd is in the set.
+FD_ZERO(fd_set *set); - Clear all entries from the set.
+```
