@@ -9,3 +9,5 @@
 105: Accept failed
 
 106: Failed for fetch client addr info.
+
+107: Error on acceptiong new connection
