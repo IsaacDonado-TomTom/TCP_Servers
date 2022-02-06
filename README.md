@@ -3,6 +3,7 @@
   + [Allocating a socket](#socket)
   + [Bind socket to port](#bind)
   + [Listen for incomming connections](#listen)
+  + [Accept pending connection](#accept)
 
 
 <a href name="tcp_server"></a>
@@ -107,3 +108,36 @@ Useful definitions:
 SOMAXCONN - Socket maximum connection number established by the OS.
 ```
 
+
+
+
+<a name="accept"></a>
+# int accept(int sockfd, struct sockaddr* storage, socklen_t* addrlen)
+Accept an incoming connection on a listening socket
+
+```text
+#include <sys/types.h>
+#include <sys/socket.h>
+```
+
+**Parameters**
++ **sockfd** The socket fd used in the listen() function, usually result of socket()
++ **storage** A pointer to a local struct that will be filled with information about the connecting client.
++ **addrlen** A pointer to the result of sizeof of the previous parameter.
+
+**Description**
+Once you’ve gone through the trouble of getting a SOCK_STREAM socket and setting it up for incoming connections with listen(), then you call accept() to actually get yourself a new socket descriptor to use for subsequent communication with the newly connected client.
+
+The old socket that you are using for listening is still there, and will be used for further accept() calls as they come in.
+
+accept() will normally block, and you can use select() to peek on the listening socket descriptor ahead of time to see if it’s “ready to read”. If so, then there’s a new connection waiting to be accept()ed! Yay! Alternatively, you could set the O_NONBLOCK flag on the listening socket using fcntl(), and then it will never block, choosing instead to return -1 with errno set to EWOULDBLOCK.
+
+The socket descriptor returned by accept() is a bona fide socket descriptor, open and connected to the remote host. You have to close() it when you’re done with it.
+
+**Return**
+accept() returns the newly connected socket descriptor, or -1 on error, with errno set appropriately.
+```text
+Useful definitions: 
+NI_MAXHOST - ..
+NI_MAXSERV - ..
+```
