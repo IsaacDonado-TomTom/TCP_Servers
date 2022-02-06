@@ -39,6 +39,11 @@ In usual usage, you get the values for these parameters from a call to getaddrin
 
 **Return**
 The new socket descriptor to be used in subsequent calls, or -1 on error (and errno will be set accordingly).
+```text
+Useful definitions: 
+PF_NET - In practice, the same as AF_NET but the standard is to call PF_NET from socket and AF_NET from the sockaddre struct. This stands for net Address Family and refers to Pv4 IP addresses, AF_NET6 refers to Pv6 addresses for instance.
+SOCKSTREAM - Represents that we're dealing with reliable TCP socket. SOCK_DGRAM for example refers to a UDP socket.
+```
 
 
 
@@ -69,6 +74,11 @@ Lastly, the addrlen parameter should be set to sizeof my_addr.
 
 **Return**
 Returns zero on success, or -1 on error (and errno will be set accordingly).
+```text
+Useful definitions: 
+AF_NET - his stands for net Address Family and refers to Pv4 IP addresses, AF_NET6 refers to Pv6 addresses for instance.
+INADDDRANY - When we don't know the IP address of our machine, we can use the special IP address INADDR_ANY. It allows our server to receive packets that have been targeted by any of the interfaces. This is an IP address that is used when we don't want to bind a socket to any specific IP.
+```
 
 
 
@@ -92,4 +102,8 @@ Before calling listen(), your server should call bind() to attach itself to a sp
 
 **Return**
 Returns zero on success, or -1 on error (and errno will be set accordingly).
+```text
+Useful definitions: 
+SOMAXCONN - Socket maximum connection number established by the OS.
+```
 
