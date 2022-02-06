@@ -179,3 +179,38 @@ MSG_OOB - Receive Out of Band data. This is how to get data that has been sent t
 MSG_PEEK - If you want to call recv() “just for pretend”, you can call it with this flag. This will tell you what’s waiting in the buffer for when you call recv() “for real” (i.e. without the MSG_PEEK flag. It’s like a sneak preview into the next recv() call.
 MSG_WAITALL - Tell recv() to not return until all the data you specified in the len parameter. It will ignore your wishes in extreme circumstances, however, like if a signal interrupts the call or if some error occurs or if the remote side closes the connection, etc. Don’t be mad with it.
 ```
+
+
+
+
+<a name="send"></a>
+# int send(int sockfd, void* buff, int len, int flags)
+Send data out over a socket
+
+```text
+#include <sys/types.h>
+#include <sys/socket.h>
+```
+
+**Parameters** 
++ **sockfd** socket descriptor you want to send data to (whether it’s the one returned by socket() or the one you got with accept())., in our case it's the one from accept().
++ **buff** is a pointer to the data you want to send
++ **len** length of that data in bytes
++ **flags** Just set flags to 0.
+
+**Description**
+These functions send data to a socket. Generally speaking, send() is used for TCP SOCK_STREAM connected sockets.
+
+
+**Return**
+Returns the number of bytes actually sent, or -1 on error (and errno will be set accordingly). Note that the number of bytes actually sent might be less than the number you asked it to send!
+Also, if the socket has been closed by either side, the process calling send() will get the signal SIGPIPE. (Unless send() was called with the MSG_NOSIGNAL flag.)
+
+
+```text
+Useful definitions for flags: 
+MSG_OOB - Send as “out of band” data. TCP supports this, and it’s a way to tell the receiving system that this data has a higher priority than the normal data. The receiver will receive the signal SIGURG and it can then receive this data without first receiving all the rest of the normal data in the queue.
+MSG_DONTROUTE - Don’t send this data over a router, just keep it local.
+MSG_DONTWAIT - If send() would block because outbound traffic is clogged, have it return EAGAIN. This is like a “enable non-blocking just for this send.” See the section on blocking for more details.
+MSG_NOSIGNAL - If you send() to a remote host which is no longer recv()ing, you’ll typically get the signal SIGPIPE. Adding this flag prevents that signal from being raised.
+```
