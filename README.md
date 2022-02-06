@@ -156,7 +156,7 @@ Receive data on a socket
 #include <sys/socket.h>
 ```
 
-**Parameters** ah...
+**Parameters** 
 + **sockfd** the socket descriptor you want to send data to (whether it’s the one returned by socket() or the one you got with accept()), in our case it's the one from accept().
 + **buff** buff is a pointer to the data you want to send
 + **len** len is the length of that data in bytes
