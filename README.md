@@ -1,4 +1,4 @@
-*Credits to: [Beej's Guide to Network Programming](https://beej.us/guide/bgnet/html/) & [Sloan Kelly from YouTube](https://www.youtube.com/channel/UC4LMPKWdhfFlJrJ1BHmRhMQ), most of the stuff written on this document has been extracted and slightly simplified or modified from those two sources*
+*Sources: [Beej's Guide to Network Programming](https://beej.us/guide/bgnet/html/), [Sloan Kelly - Youtube](https://www.youtube.com/channel/UC4LMPKWdhfFlJrJ1BHmRhMQ), [Jacob Sorber - Youtube](https://www.youtube.com/watch?v=Y6pFtgRdUts), man pages*
 
 # Table of Contents
 1. [Making a simple TCP server without non-blocking abilities](#tcp_server)
