@@ -222,12 +222,10 @@ MSG_NOSIGNAL - If you send() to a remote host which is no longer recv()ing, youâ
 <a href name="multiple_clients"></a>
 # Allow multiple clients to connect
 Up until this point our TCP server can only handle a single connection and blocks the rest if it's busy with one, a possible solution for this is multithreading but that can be a bad idea. Another two options are the functions select() and poll(). I've realized after some research poll is much more efficient than select but we'll be covering mostly select due to its simplicity.
-*Sources that helped me through this: [Jacob Sorber](https://www.youtube.com/watch?v=Y6pFtgRdUts), [Sloan Kelly](https://www.youtube.com/watch?v=dquxuXeZXgo&list=PLZo2FfoMkJeEogzRXEJeTb3xpA2RAzwCZ&index=11)*
 
 
 <a name="select"></a>
-## int select(int n, fd_set\ *readfds, fd_set \*writefds, fd_set \*exceptfds,
-               struct timeval \*timeout)
+## int select(int n, fd_set\ *readfds, fd_set \*writefds, fd_set \*exceptfds, struct timeval \*timeout)
 Check if sockets descriptors are ready to read/write
 
 ```text
