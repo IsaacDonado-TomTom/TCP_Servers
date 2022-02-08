@@ -56,25 +56,14 @@ int main(int argc, char** argv)
     // Set sockaddr_in for client info and accept()
     sockaddr_in client_info;
     socklen_t  client_infoSize = sizeof(client_info);
-    char        host[NI_MAXHOST];
-    char        service[NI_MAXSERV];
-    memset((void*)host, 0, NI_MAXHOST);       //Cleaning buffer, maybe garbage in there.
-    memset((void*)service, 0, NI_MAXSERV); //Cleaning...
+    std::cout << "right before accept()\n";
     int client_socket = accept(socket_fd, (sockaddr*)&client_info, &client_infoSize);
-
+    std::cout << "right after after()\n";
     if (client_socket < 0)
     {
         close (socket_fd);
         error_exit("[105]Accept() failed.", 105);
     }
-    //if (!(getaddrinfo(&host, &service, &client_info, &client_infoSize))
-    //{
-    //    close(socket_fd);
-    //    close(client_socket);
-    //    error_exit("[106]Failed for fetch client addr info.", 106);
-    //}
-
-
 
 
 
@@ -92,7 +81,9 @@ int main(int argc, char** argv)
         memset((void*)buff, 0, 4096);
 
         // Wait for msg
+        std::cout << "right before recv()\n";
         int bytesReceived = recv(client_socket, &buff, 4096, 0);
+        std::cout << "right after recv()\n";
         if (bytesReceived < 0)
         {
             close(client_socket);
@@ -110,6 +101,7 @@ int main(int argc, char** argv)
         //Resend same msg back to client
         send(client_socket, &buff, bytesReceived + 1, 0);
     }
+    std::cout << "right after while()\n";
 
 
 

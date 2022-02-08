@@ -8,6 +8,7 @@
 #include <netdb.h>  // Definitions for default buffer sizes.
 #include <sys/select.h> // For select()
 #include <sys/time.h> // for select
+#include <vector>
 
 int         server_port;
 std::string server_password;
@@ -61,66 +62,63 @@ int main(int argc, char** argv)
 
     // Select magic
     fd_set  master; 
-    fd_set  copy;
-    int     socket_count;
-    FD_ZERO(&master);           // Initialized "master" set and cleared it for safety. 
-    FD_SET(socket_fd, &master); // Add main socket to the set. (?)
-    int     max_fd = socket_fd;
-    int     current_socket;
-    int     new_client;
+    FD_ZERO(&master);           //Set fd_Set to zero.
+    FD_SET(socket_fd, &master); // Add listening FD to fd_Set
+    int     max_fd = socket_fd; // To keep track of highest fd for select
+    std::vector<int>    fds;
+    std::cout << "fds.size() : " << fds.size() << std::endl;
 
-    // Client info struct & more
-    sockaddr_in client_info;
-    socklen_t  client_infoSize = sizeof(client_info);
-    char        buff[4096];
-    int         bytes_received;
-
-    while(true)
+    std::cout << "right before while()\n";
+    while (true)
     {
-        // Copy since select destroys "uneeded" info from struct
-        copy = master;
-        socket_count = select(max_fd, &copy, NULL, NULL, NULL);
-        for (int i = 0 ; i < socket_count ; i++)
+        fd_set  copy = master;   // make copy of master because select modifies struct.
+        int     socket_count = select(max_fd + 1, &copy, NULL, NULL, NULL); // search up to max_fd, which will be changing, pass only readfds because we're receiving.
+
+
+        if (FD_ISSET(socket_fd, &copy))
         {
-            current_socket = copy.fd_array[i];      // fd_array doesn't exist in fd_set in linux/macos ... Need another approach
-            if (current_socket == socket_fd)
+            sockaddr_in client_info;
+            socklen_t   client_infoSize = sizeof(client_info);
+            int new_client = accept(socket_fd, (sockaddr*)&client_info, &client_infoSize);
+            if (new_client > max_fd)
             {
-                // New connection.
-
-
-                // accept() new connection
-                new_client = accept(socket_fd, (sockaddr*)&client_info, &client_infoSize);
-                if (new_client < 0)
-                {
-                    close(socket_fd);
-                    error_exit("[107]Error on acceptiong new connection", 107);
-                }
-                std::cout << "Accepted connection from: " << inet_ntoa(client_info.sin_addr) << std::endl;
-                FD_SET(new_client, &master);    // Adding to master list of FDs
-                if (new_client > max_fd)
-                    max_fd = new_client;
+                max_fd = new_client;
             }
-            else
-            {
-                // Message from connected client.
 
-                // recv() actual message
-                memset((void*)buff, 0, 4096);
-                bytes_received = recv(current_socket, &buff, 4096, 0);
-                if (bytes_received <= 0)
+            std::cout << "Accepted new connection from: " << inet_ntoa(client_info.sin_addr) << std::endl;
+            FD_SET(new_client, &master);
+            fds.push_back(new_client);
+            
+        }
+
+        for(int i = 0;i < fds.size(); i++)
+        {
+            if (FD_ISSET(fds[i], &copy))
+            {
+                char    buff[4096];
+                memset((void*)&buff, 0, 4096);
+                int bytesReceived = recv(fds[i], (void*)buff, 4096, 0);
+                if (bytesReceived <= 0)
                 {
-                   std::cout << "Error or connection lost with " << inet_ntoa(client_info.sin_addr);
-                   close(current_socket);
-                   FD_CLR(current_socket, &master);
+                    FD_CLR(fds[i], &master);
+                    fds.erase(fds.begin() + i);
+                    std::cout << "Client disconnected\n";
                 }
-                else
+                std::cout << "Message received: " << std::string(buff, 0, bytesReceived);
+                if (std::string(buff, 0, bytesReceived).find("HOWMANY") != std::string::npos)
                 {
-                    std::cout << "[RECEIVED]: " << std::string(buff, 0, bytes_received);
+                    for(int j = 0; j < fds.size();j++)
+                    {
+                        std::cout << fds[j] << "..";
+                    }
+                    std::cout << "\n";
                 }
+                send(fds[i], (void*)buff, bytesReceived+1, 0);
             }
         }
-    }
 
+    }
+    
 
     close(socket_fd);
     return (0);
