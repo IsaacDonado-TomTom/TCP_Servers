@@ -8,6 +8,7 @@
 #include <netdb.h>  // Definitions for default buffer sizes.
 #include <sys/select.h> // For select()
 #include <sys/time.h> // for select
+#include <fcntl.h>
 #include <vector>
 
 int         server_port;
@@ -61,6 +62,7 @@ int main(int argc, char** argv)
     }
 
     // Select magic
+    fcntl(socket_fd, F_SETFL, O_NONBLOCK);
     fd_set  master; 
     FD_ZERO(&master);           //Set fd_Set to zero.
     FD_SET(socket_fd, &master); // Add listening FD to fd_Set
@@ -80,12 +82,14 @@ int main(int argc, char** argv)
             sockaddr_in client_info;
             socklen_t   client_infoSize = sizeof(client_info);
             int new_client = accept(socket_fd, (sockaddr*)&client_info, &client_infoSize);
+            fcntl(new_client, F_SETFL, O_NONBLOCK);
             if (new_client > max_fd)
             {
                 max_fd = new_client;
             }
 
             std::cout << "Accepted new connection from: " << inet_ntoa(client_info.sin_addr) << std::endl;
+
             FD_SET(new_client, &master);
             fds.push_back(new_client);
             
