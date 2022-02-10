@@ -22,12 +22,11 @@ void    error_exit(const std::string& msg, int exit_code)
 
 int main(int argc, char** argv)
 {
-    if (argc != 3)
-        error_exit("[101]Wrong number of arguements.", 101);
+    if (argc != 2)
+        error_exit("[101]Usage: ./a.out [PORT_NUMBER]", 101);
 
     server_port = atoi(argv[1]);
-    server_password = std::string(argv[2]);
-    std::cout << "Port: " << server_port << std::endl << "Password: " << server_password << std::endl;
+    std::cout << "Port: " << server_port << std::endl;
 
 
 
@@ -68,9 +67,7 @@ int main(int argc, char** argv)
     FD_SET(socket_fd, &master); // Add listening FD to fd_Set
     int     max_fd = socket_fd; // To keep track of highest fd for select
     std::vector<int>    fds;
-    std::cout << "fds.size() : " << fds.size() << std::endl;
 
-    std::cout << "right before while()\n";
     while (true)
     {
         fd_set  copy = master;   // make copy of master because select modifies struct.
@@ -108,7 +105,7 @@ int main(int argc, char** argv)
                     fds.erase(fds.begin() + i);
                     std::cout << "Client disconnected\n";
                 }
-                std::cout << "Message received: " << std::string(buff, 0, bytesReceived);
+                std::cout << "Message received: " << std::string(buff, 0, bytesReceived) << std::endl;
                 if (std::string(buff, 0, bytesReceived).find("HOWMANY") != std::string::npos)
                 {
                     for(int j = 0; j < fds.size();j++)

@@ -9,6 +9,7 @@
   + [Receive data on a socket](#recv)
 2. [Allow multiple clients to connect](#multiple_clients)
   + [Check if sockets descriptors are ready to read/write using select()](#select)
+3. [Connect command & TCP clients](https://github.com/donadoio/TCP_client)
 
 
 
