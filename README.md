@@ -1,3 +1,7 @@
+# To run programs
+1. `cd into folder`
+2. `make`
+
 *Sources: [Beej's Guide to Network Programming](https://beej.us/guide/bgnet/html/), [Sloan Kelly - Youtube](https://www.youtube.com/channel/UC4LMPKWdhfFlJrJ1BHmRhMQ), [Jacob Sorber - Youtube](https://www.youtube.com/watch?v=Y6pFtgRdUts), man pages*
 
 # Table of Contents
